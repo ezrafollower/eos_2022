@@ -1,0 +1,144 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.9~svn20110310	//
+BLOCK	final/src/game_client.h	17;"	d
+CAT_NUM	final/random_map.c	8;"	d	file:
+CAT_NUM	final/src/random_map.c	8;"	d	file:
+CC_ARM	final/src/Makefile	/^CC_ARM=arm-unknown-linux-gnu-gcc$/;"	m
+CFLAGS	final/src/Makefile	/^CFLAGS=-Wall -pthread -std=c++11$/;"	m
+CFLAGS_ARM	final/src/Makefile	/^CFLAGS_ARM=-L \/opt\/arm-unknown-linux-gnu\/arm-unknown-linux-gnu\/lib\/ \\$/;"	m
+COL_SIZE	final/random_map.c	7;"	d	file:
+COL_SIZE	final/src/random_map.c	7;"	d	file:
+CXX	final/src/Makefile	/^CXX=g++$/;"	m
+Change_order	final/random_map.c	/^void Change_order(int pattern[ROL_SIZE][COL_SIZE], int times)$/;"	f
+Change_order	final/src/random_map.c	/^void Change_order(int pattern[ROL_SIZE][COL_SIZE], int times)$/;"	f
+DUST	final/src/game_client.h	14;"	d
+GAMECLIENT_H	final/src/game_client.h	2;"	d
+GAME_STATE_END	final/src/data_utils.h	9;"	d
+GAME_STATE_INIT	final/src/data_utils.h	7;"	d
+GAME_STATE_PLAYING	final/src/data_utils.h	8;"	d
+Game	final/src/game.cpp	/^Game::Game()$/;"	f	class:Game
+Game	final/src/game.h	/^class Game{$/;"	c
+GameClient	final/src/game_client.cpp	/^GameClient::GameClient()$/;"	f	class:GameClient
+GameClient	final/src/game_client.h	/^class GameClient$/;"	c
+Generator	final/random_map.c	/^void Generator(int array[ROL_SIZE][COL_SIZE], int row, int col, int cat_num)$/;"	f
+Generator	final/src/random_map.c	/^void Generator(int array[ROL_SIZE][COL_SIZE], int row, int col, int cat_num)$/;"	f
+Get_random_pattern	final/random_map.c	/^void Get_random_pattern(int pattern[ROL_SIZE][COL_SIZE], int rol_size, int col_size, int cat_num)$/;"	f
+Get_random_pattern	final/src/random_map.c	/^void Get_random_pattern(int pattern[ROL_SIZE][COL_SIZE], int rol_size, int col_size, int cat_num)$/;"	f
+Get_uniform_pattern	final/random_map.c	/^void Get_uniform_pattern(int pattern[ROL_SIZE][COL_SIZE], int rol_size, int col_size, int cat_num)$/;"	f
+Get_uniform_pattern	final/src/random_map.c	/^void Get_uniform_pattern(int pattern[ROL_SIZE][COL_SIZE], int rol_size, int col_size, int cat_num)$/;"	f
+HIT	final/src/game_client.h	16;"	d
+MOLE	final/src/game_client.h	15;"	d
+MOLE_STATE_DOWN	final/src/game.h	22;"	d
+MOLE_STATE_UP	final/src/game.h	21;"	d
+NUM_MOLES	final/src/data_utils.h	4;"	d
+NUM_PLAYERS	final/src/data_utils.h	5;"	d
+P	final/src/game.cpp	/^int Game::P(int s)$/;"	f	class:Game
+P	final/src/game_client.cpp	/^int P(int s)$/;"	f
+Player	final/src/game.h	/^struct Player{$/;"	s
+ROL_SIZE	final/random_map.c	6;"	d	file:
+ROL_SIZE	final/src/random_map.c	6;"	d	file:
+ROUND_INTERVAL	final/src/game.h	19;"	d
+ROUND_TIMES	final/src/game.h	18;"	d
+SEM_KEY	final/src/game.h	11;"	d
+SEM_MODE	final/src/game.h	12;"	d
+SEM_MODE	final/src/game_client.cpp	11;"	d	file:
+SERVER_PORT	final/src/game.h	24;"	d
+SOCKET_UTILS_H	final/src/socket_utils.h	2;"	d
+SOCKOP_H	final/src/sockop.h	2;"	d
+TRANSPORT_TYPE_TCP	final/src/socket_utils.h	14;"	d
+TRANSPORT_TYPE_UDP	final/src/socket_utils.h	15;"	d
+V	final/src/game.cpp	/^int Game::V(int s)$/;"	f	class:Game
+V	final/src/game_client.cpp	/^int V(int s)$/;"	f
+__GAME_H__	final/src/game.h	2;"	d
+__PKT_UTIL_H__	final/src/data_utils.h	2;"	d
+block_map	final/src/game_client.h	/^const unsigned short block_map[row][column] = {$/;"	v
+broadcastToPlayers	final/src/game.cpp	/^void Game::broadcastToPlayers()$/;"	f	class:Game
+button	final/src/client.cpp	/^int button;$/;"	v
+column	final/src/game_client.h	19;"	d
+connectsock	final/src/sockop.cpp	/^int connectsock( const char *host , const char *service , const char *transport)$/;"	f
+connfd	final/src/game.h	/^	int connfd;$/;"	m	struct:Player
+createClientSock	final/src/socket_utils.c	/^int createClientSock(const char *host, int port, int type)$/;"	f
+createServerSock	final/src/socket_utils.c	/^int createServerSock(int port, int type)$/;"	f
+display	final/src/client.cpp	/^lcd_write_info_t display;$/;"	v
+draw	final/src/game_client.cpp	/^void GameClient::draw()$/;"	f	class:GameClient
+draw_graph	final/src/game_client.cpp	/^void GameClient::draw_graph(int graph_id, int x, int y)$/;"	f	class:GameClient
+draw_moles	final/src/game_client.cpp	/^void GameClient::draw_moles(int state[])$/;"	f	class:GameClient
+dust_map	final/src/game_client.h	/^const unsigned short dust_map[row][column] = {$/;"	v
+errexit	final/src/sockop.h	12;"	d
+game	final/src/client.cpp	/^GameClient game;$/;"	v
+gameLoop	final/src/game.cpp	/^void Game::gameLoop()$/;"	f	class:Game
+gameOver	final/src/game.h	/^	int gameOver;$/;"	m	class:Game
+gameState	final/src/data_utils.h	/^  int gameState;$/;"	m	struct:__anon1
+gameState	final/src/game.h	/^	int gameState;  	\/\/ to keep track of the game's state (0: menu, 1: game)$/;"	m	class:Game
+gameStop	final/src/game.cpp	/^void Game::gameStop(){$/;"	f	class:Game
+game_timer	final/src/game.h	/^	struct itimerval game_timer;$/;"	m	class:Game	typeref:struct:Game::itimerval
+graph	final/src/game_client.h	/^        lcd_full_image_info graph;$/;"	m	class:GameClient
+handleInit	final/src/game.cpp	/^int Game::handleInit()$/;"	f	class:Game
+handlePlaying	final/src/game.cpp	/^int Game::handlePlaying()$/;"	f	class:Game
+hide_and_play	final/src/game.h	/^	bool hide_and_play;$/;"	m	class:Game
+hide_and_play	final/src/game_client.h	/^        bool hide_and_play;$/;"	m	class:GameClient
+hide_p	final/src/data_utils.h	/^  bool hide_p;$/;"	m	struct:__anon1
+hit_map	final/src/game_client.h	/^const unsigned short hit_map[row][column] = {$/;"	v
+intHandler	final/src/main.cpp	/^void intHandler(int signum){$/;"	f
+io_fd	final/src/client.cpp	/^int io_fd;$/;"	v
+io_fd	final/src/game_client.h	/^        int server_fd,io_fd;$/;"	m	class:GameClient
+key	final/src/client.cpp	/^unsigned short key;$/;"	v
+key	final/src/game_client.h	/^        key_t key;$/;"	m	class:GameClient
+keypad_input	final/src/game_client.h	/^        char keypad_input[2];$/;"	m	class:GameClient
+lcd_semid	final/src/game_client.h	/^        int lcd_semid;$/;"	m	class:GameClient
+main	final/random_map.c	/^int main()$/;"	f
+main	final/src/client.cpp	/^int main(int argc, char** argv)$/;"	f
+main	final/src/main.cpp	/^int main(int argc, char *argv[])$/;"	f
+main	final/src/random_map.c	/^int main()$/;"	f
+menu_map	final/src/game_client.h	/^const unsigned short menu_map[0x800] = {$/;"	v
+mole_map	final/src/game_client.h	/^const unsigned short mole_map[row][column] = {$/;"	v
+mole_states	final/src/data_utils.h	/^  char mole_states[NUM_MOLES];$/;"	m	struct:__anon1
+mole_x	final/src/game_client.h	/^const int mole_x[NUM_MOLES] = {1, 6, 11, 1 ,  6, 11,  1,  6, 11, 1, 6, 11};$/;"	v
+mole_y	final/src/game_client.h	/^const int mole_y[NUM_MOLES] = {1, 1, 1 , 32, 32, 32, 63, 63, 63, 92, 92, 92};$/;"	v
+moles	final/src/game.h	/^	char moles[NUM_MOLES];$/;"	m	class:Game
+moles_empty	final/src/game.h	/^	char moles_empty[NUM_MOLES];$/;"	m	class:Game
+myGame	final/src/game.h	/^static Game myGame;$/;"	v
+newR	final/src/data_utils.h	/^  bool newR;$/;"	m	struct:__anon1
+newS	final/src/data_utils.h	/^  bool newS;\/\/ one round have two section, display section and hide_and_play section$/;"	m	struct:__anon1
+newround	final/src/game.h	/^	bool newround;$/;"	m	class:Game
+newsection	final/src/game.h	/^	bool newsection;$/;"	m	class:Game
+passivesock	final/src/sockop.cpp	/^int passivesock(const char *service , const char *transport , int qlen)$/;"	f
+pattern_num	final/src/game_client.h	21;"	d
+players	final/src/game.h	/^	struct Player players[NUM_PLAYERS];$/;"	m	class:Game	typeref:struct:Game::Player
+print_pattern	final/random_map.c	/^void print_pattern(int pattern[ROL_SIZE][COL_SIZE])$/;"	f
+print_pattern	final/src/random_map.c	/^void print_pattern(int pattern[ROL_SIZE][COL_SIZE])$/;"	f
+quit	final/src/game.h	/^	int quit; 			\/\/ boolean to keep game loop running$/;"	m	class:Game
+rcv_size	final/src/game_client.h	/^        int rcv_size;$/;"	m	class:GameClient
+rcvmsg	final/src/game_client.h	/^        char rcvmsg[100];$/;"	m	class:GameClient
+readServer	final/src/game_client.cpp	/^void GameClient::readServer()$/;"	f	class:GameClient
+read_pad	final/src/game_client.cpp	/^int GameClient::read_pad()$/;"	f	class:GameClient
+round_cnt	final/src/game.h	/^	int round_cnt;$/;"	m	class:Game
+row	final/src/game_client.h	20;"	d
+run	final/src/game_client.cpp	/^void GameClient::run()$/;"	f	class:GameClient
+sa	final/src/game.h	/^	struct sigaction sa;$/;"	m	class:Game	typeref:struct:Game::sigaction
+score	final/src/data_utils.h	/^  int score;$/;"	m	struct:__anon1
+score	final/src/game.h	/^	int score;$/;"	m	struct:Player
+secondhit	final/src/game_client.h	/^        bool secondhit;$/;"	m	class:GameClient
+secondrcv	final/src/game.h	/^	bool secondrcv[NUM_PLAYERS];$/;"	m	class:Game
+sem	final/src/game.h	/^	int sem;$/;"	m	class:Game
+sendServer	final/src/game_client.cpp	/^void GameClient::sendServer()$/;"	f	class:GameClient
+server_Listener	final/src/client.cpp	/^void* server_Listener(void* argv)$/;"	f
+server_fd	final/src/game_client.h	/^        int server_fd,io_fd;$/;"	m	class:GameClient
+server_pkt	final/src/data_utils.h	/^} server_pkt;$/;"	t	typeref:struct:__anon1
+setup	final/src/game_client.cpp	/^void GameClient::setup(int server_fd, int io_fd)$/;"	f	class:GameClient
+sndmsg	final/src/game_client.h	/^        char sndmsg[100];$/;"	m	class:GameClient
+sndmsg2	final/src/game_client.h	/^        char sndmsg2[100];$/;"	m	class:GameClient
+socketfd	final/src/client.cpp	/^int socketfd;$/;"	v
+sockfd	final/src/game.h	/^	int sockfd;$/;"	m	class:Game
+stage_pointer	final/src/game_client.h	/^        int stage_pointer;$/;"	m	class:GameClient
+swap	final/random_map.c	/^void swap(int *a, int *b)$/;"	f
+swap	final/src/random_map.c	/^void swap(int *a, int *b)$/;"	f
+thread	final/src/client.cpp	/^pthread_t thread;$/;"	v
+thread_handler	final/src/game.cpp	/^void *Game::thread_handler(void *arg)$/;"	f	class:Game
+timer_handler	final/src/game.cpp	/^void Game::timer_handler(int signum)$/;"	f	class:Game
+~Game	final/src/game.cpp	/^Game::~Game()$/;"	f	class:Game
+~GameClient	final/src/game_client.cpp	/^GameClient::~GameClient()$/;"	f	class:GameClient
