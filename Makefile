@@ -11,7 +11,8 @@ all:
 	${CXX} ${CFLAGS} -c game.cpp
 	${CXX} ${CFLAGS} -c main.cpp
 	${CXX} ${CFLAGS} -c socket_utils.c
-	${CXX} ${CFLAGS} main.o socket_utils.o game.o  -o game
-	${CC_ARM} ${CFLAGS_ARM} client.cpp game_client.cpp sockop.cpp -o client
+	${CXX} ${CFLAGS} -c random_map.c
+	${CXX} ${CFLAGS} main.o socket_utils.o game.o random_map.o -o game
+	${CC_ARM} ${CFLAGS_ARM} random_map.c LCD.c client.cpp game_client.cpp sockop.cpp -o client
 clean:
 	${RM} main.o game.o socket_utils.o game client

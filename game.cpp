@@ -9,10 +9,11 @@ Game::Game()
   }
   myGame.newround = false;
   myGame.newsection = false;
-  myGame.hide_and_play = false;
-  for (int i = 0; i < NUM_MOLES; i++)
+  myGame.hide_and_play = true;
+  for (int i = 0; i < NUM_CARDS; i++)
   {
-    myGame.moles_empty[i] = 0;
+    myGame.cards_empty[i] = 0;
+    myGame.cards[i] = SPACE;
   }
   gameState = GAME_STATE_INIT; //0 menu 1 start
 }
@@ -29,9 +30,9 @@ void Game::timer_handler(int signum)
     myGame.hide_and_play = true;
     printf("hide and play\n");
     myGame.newsection = true;
-    for (int i = 0; i < NUM_MOLES; i++)
+    for (int i = 0; i < NUM_CARDS; i++)
     {
-      myGame.moles_empty[i] = 0;
+      myGame.cards_empty[i] = 0;
     }
   }
   else
@@ -47,15 +48,22 @@ void Game::timer_handler(int signum)
     }
 
     myGame.newround = true;
-    // TODO: Update mole states
-    printf("mole states: ");
-    for (int i = 0; i < NUM_MOLES; i++)
+    // TODO: Update card states
+    int temp[ROL_SIZE][COL_SIZE];
+    Get_uniform_pattern(temp, ROL_SIZE, COL_SIZE, CAT_NUM);
+
+    printf("card states: \n");
+    for (int i = 0; i < ROL_SIZE; i++)
     {
-      myGame.moles[i] = (rand() % 3);
-      printf("%d ", myGame.moles[i]);
+      for(int j=0;j<COL_SIZE;j++)
+      {
+        myGame.cards[i*COL_SIZE+j] = temp[i][j];
+        printf("%d ", temp[i][j]);
+      } 
+      printf("\n");
     }
     printf("\n");
-
+    
     myGame.hide_and_play = false;
   }
   myGame.broadcastToPlayers();
@@ -98,13 +106,14 @@ void Game::broadcastToPlayers()
   server_pkt pkt;
   if(myGame.hide_and_play == false)
   {
-    memcpy(pkt.mole_states, moles, sizeof(moles));
+    memcpy(pkt.card_states, cards, sizeof(cards));
   }
   else
   {
-    memcpy(pkt.mole_states, moles_empty, sizeof(moles_empty));
+    memcpy(pkt.card_states, cards_empty, sizeof(cards_empty));
   }
   pkt.gameState = gameState;
+  pkt.round_num = myGame.round_cnt;
   pkt.hide_p = myGame.hide_and_play;
   pkt.newR = myGame.newround;
   myGame.newround = false;
@@ -150,7 +159,7 @@ int Game::handleInit()
 
 int Game::handlePlaying()
 {
-  // Setup Game environment: Game timer, Mole States, Player Threads
+  // Setup Game environment: Game timer, card States, Player Threads
   myGame.sem = semget(SEM_KEY, 1, IPC_CREAT | IPC_EXCL | SEM_MODE);
   // sem = semget(SEM_KEY, 1, IPC_CREAT | SEM_MODE);
   if (myGame.sem < 0)
@@ -179,17 +188,10 @@ int Game::handlePlaying()
   game_timer.it_interval.tv_usec = 0;
   setitimer(ITIMER_REAL, &game_timer, NULL);
 
-  for (int i = 0; i < NUM_MOLES; i++)
-  {
-    moles[i] = (rand() % 8) == 0;
-  }
-
   for (int i = 0; i < NUM_PLAYERS; i++)
   {
     pthread_t thread;
-    // struct ThreadArgs* args = (struct ThreadArgs* )malloc(sizeof(args));
-    // args->player = &players[i];
-    // args->theGame = &myGame;
+
     printf("thread> id = %d\n", i);
     printf("thread> connfd = %d\n", myGame.players[i].connfd);
     if (pthread_create(&thread, NULL, (void *(*)(void *)) & (Game::thread_handler), (void *)i))
@@ -231,10 +233,6 @@ void *Game::thread_handler(void *arg)
       close(myGame.players[index].connfd);
       return NULL;
     }
-    // for(int i=0; i<9 ; i++){
-    //   printf("%d ", (int)myGame.moles[i]);
-    // }
-    // printf("\n");
     if (msg[n - 1] == '\n')
       msg[n - 1] = '\0';
     else
@@ -242,7 +240,7 @@ void *Game::thread_handler(void *arg)
     printf("> %s\n", msg);
     std::cout << msg << std::endl;
     // key = msg[0] - '1';
-    // Check key and hit moles
+    // Check key and hit cards
     if(myGame.hide_and_play == true)
     {
       myGame.P(myGame.sem);
@@ -266,18 +264,13 @@ void *Game::thread_handler(void *arg)
               key2 = 10;
           else if(msg[0] == '#')
               key2 = 11;
-        if (myGame.moles[key] && myGame.moles[key2] && key!=key2 && (myGame.moles[key] == myGame.moles[key2]))
+        if (myGame.cards[key] && myGame.cards[key2] && key!=key2 && (myGame.cards[key] == myGame.cards[key2]))
         {
           myGame.players[index].score++;
-          myGame.moles_empty[key] = myGame.moles[key];
-          myGame.moles_empty[key2] = myGame.moles[key2];
-          myGame.moles[key] = 0;
-          myGame.moles[key2] = 0;
-          // write(myGame.players[index].connfd, "HIT\n", sizeof("HIT\n"));
-        }
-        else
-        {
-          // write(myGame.players[index].connfd, "MISS\n", sizeof("MISS\n"));
+          myGame.cards_empty[key] = myGame.cards[key];
+          myGame.cards_empty[key2] = myGame.cards[key2];
+          myGame.cards[key] = 0;
+          myGame.cards[key2] = 0;
         }
         myGame.secondrcv[index] = false;
       }

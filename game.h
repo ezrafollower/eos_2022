@@ -8,18 +8,18 @@
 #include <pthread.h>
 
 #include <sys/sem.h>
-#define SEM_KEY 309512015
+#define SEM_KEY 310512009
 #define SEM_MODE 0666
 
 #include "socket_utils.h"
 #include "data_utils.h"
+#include "random_map.h"
 
 
-#define ROUND_TIMES 5
-#define ROUND_INTERVAL 7
+#define ROUND_INTERVAL 10
 
-#define MOLE_STATE_UP 0
-#define MOLE_STATE_DOWN 1
+#define CARD_STATE_UP 0
+#define CARD_STATE_DOWN 1
 
 #define SERVER_PORT 8898
 
@@ -48,8 +48,8 @@ private:
 	bool newround;
 	bool newsection;
 	bool hide_and_play;
-	char moles[NUM_MOLES];
-	char moles_empty[NUM_MOLES];
+	char cards[NUM_CARDS];
+	char cards_empty[NUM_CARDS];
 	struct Player players[NUM_PLAYERS];
 
 	int sem;

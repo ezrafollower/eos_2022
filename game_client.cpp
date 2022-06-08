@@ -7,6 +7,8 @@
 #include <sys/ioctl.h>
 #include <string.h>
 #include "game_client.h"
+#include "LCD.h"
+#include "random_map.h"
 
 #define SEM_MODE 0666
 
@@ -34,6 +36,59 @@ int V(int s)
    
 }
 
+// Show LCD monitor
+void show_LCD_pic(int pattern[ROL_SIZE][COL_SIZE], int fd)
+{
+    lcd_full_image_info_t display;  // struct for saving picture
+    // Clear LCD
+    ioctl(fd, LCD_IOCTL_CLEAR, NULL);
+    int i = 0, j = 0;
+    // LCD row(16 x 16) col(128)
+    for (i = 0; i < 2048; i++){        
+        display.data[i] = all_hidden[i];
+    }
+    if (pattern[0][0] == SPACE){
+        return;
+    }
+    // Card size = 20 x 72, only set 20 x 64
+    int k, l;
+    int r, c;
+    int card_num, card_row, card_col;
+    for (k = 0; k < ROL_SIZE; k++){
+        for (l = 0; l < COL_SIZE; l++){
+            card_num = pattern[k][l] - 1;
+            card_row = start_pos[k][l][0];
+            card_col = start_pos[k][l][1];
+            r = card_row;
+            c = card_col;
+            for (j = 0; j < 20; j++){
+                for (i = 0; i < 4; i++){
+                    display.data[16 * r + c] = card[card_num][j][i];
+                    c++;
+                }
+                c = card_col;
+                r++;
+            }
+        }
+    }
+    // printf("sizeof display.data: %d\n", sizeof(display.data));
+    ioctl(fd, LCD_IOCTL_DRAW_FULL_IMAGE, &display);
+}
+
+// Show the LED
+void show_LED(int num, int fd)
+{
+    int i = 0;
+    if (num > 8)
+        printf("Error: 0 <= num <= 8\n");
+    for (; i < num; i++){
+        ioctl(fd, LED_IOCTL_BIT_SET, &i);
+    }
+    for (i = num; i < 8; i++){
+        ioctl(fd, LED_IOCTL_BIT_CLEAR, &i);
+    }
+}
+
 /* Constructer and Distructer */
 GameClient::GameClient()
 {
@@ -42,7 +97,7 @@ GameClient::GameClient()
     this->keypad_input[1] = '\0';
     this->secondhit = false;
     this->hide_and_play = false;//display section
-    
+    this->round_num = 0;
     this->key = 66600;
     /*Create Semaphore for lcd display*/ 
     while(1)
@@ -89,13 +144,14 @@ void GameClient::readServer()
         server_pkt pkt;
         memcpy(&pkt,this->rcvmsg,sizeof(server_pkt));
         printf("Receive Message...");
-        int zero[pattern_num]={0};
+        int zero[ROL_SIZE][COL_SIZE]={1};
         this->hide_and_play = pkt.hide_p;
         if(this->stage_pointer == 2)
         {
+            // this->read_pad();
             if (pkt.gameState == GAME_STATE_INIT)
             {
-                this->draw_moles(zero);
+                show_LCD_pic(zero, this->io_fd);
             }
             else if(pkt.gameState == GAME_STATE_PLAYING)
             {
@@ -105,22 +161,30 @@ void GameClient::readServer()
                 if(pkt.newS == true){
                     this->secondhit = false;
                 }//clear second hit for new section
-                int flag[pattern_num] = {0};
-                // int flag_2 = 0;
-                for (size_t i = 0; i < NUM_MOLES; i++)
+                this->round_num = pkt.round_num;
+                printf("Server to Client: \n");
+                for (int i = 0; i < ROL_SIZE; i++)
                 {
-                    if(pkt.mole_states[i] == MOLE)
-                        flag[0] |= 0x01<<i;
-                    else if(pkt.mole_states[i] == HIT)
-                        flag[1] |= 0x01<<i;
+                    for(int j=0;j<COL_SIZE;j++)
+                    {
+                        this->temp[i][j] = pkt.card_states[i*COL_SIZE+j];
+                        printf("%d ", this->temp[i][j]);
+                    }
+                    printf("\n");
                 }
-                this->draw_moles(flag);
+                show_LCD_pic(this->temp, this->io_fd);
+                // this->keypad_input[0] = 88;
+                show_LED(ROUND_TIMES+1-this->round_num, this->io_fd);
                 printf("Score = %d\n",pkt.score);
+                this->show_7SEG(pkt.score, this->io_fd);
+                if (this->round_num == ROUND_TIMES+1)
+                    show_LCD_pic(zero, this->io_fd);
             }
             else if(pkt.gameState == GAME_STATE_END)
             {
                 this->keypad_input[1] = '#';
                 this->secondhit = false;
+                show_LCD_pic(zero, this->io_fd);
                 printf("game_state_end\n");
                 return;
             }
@@ -129,87 +193,30 @@ void GameClient::readServer()
     }
 }
 
+void GameClient::show_7SEG(int result, int fd)
+{
+    printf("Showing %d on 7 SEG\n", result);
+    _7seg_info_t seg_data;
+    int i = 0, temp = result;
+    unsigned long hex_result = 0;
+    for (i = 1; i <= 4096; i*=16){
+        hex_result += (temp % 10) * i;
+        temp /= 10;
+    }
+
+    ioctl(fd, _7SEG_IOCTL_ON, NULL);
+    seg_data.Mode = _7SEG_MODE_HEX_VALUE;
+    seg_data.Which = _7SEG_ALL;
+    seg_data.Value = hex_result;
+    ioctl(fd, _7SEG_IOCTL_SET, &seg_data);
+
+    return;
+}
+
 void GameClient::sendServer()
 {
     write(this->server_fd, this->sndmsg, strlen(this->sndmsg));
     write(this->server_fd, this->sndmsg2, strlen(this->sndmsg));
-}
-
-
-
-// Other function
-void GameClient::draw()
-{
-    ioctl(this->io_fd, LCD_IOCTL_DRAW_FULL_IMAGE, &(this->graph));
-    printf("DRAW()\n");
-}
-
-void GameClient::draw_graph(int graph_id, int x, int y)
-{
-    P(this->lcd_semid);
-    int c,r;
-    switch (graph_id)
-    {
-        case MOLE:
-            //this->graph.data[81] = (unsigned short)0xff00;
-            for(c = 0;c < column; c++){
-                for(r = 0; r < row; r++){
-                    this->graph.data[(y+r)*16 + x + c] = mole_map[r][c];
-                }
-            }       
-            break;
-        case DUST:
-            for(c = 0;c < column; c++){
-                for(r = 0; r < row; r++){
-                    this->graph.data[(y+r)*16 + x + c] = dust_map[r][c];
-                }
-            }       
-            break;
-        case HIT:
-            for(c = 0;c < column; c++){
-                for(r = 0; r < row; r++){
-                    this->graph.data[(y+r)*16 + x + c] = hit_map[r][c];
-                }
-            }       
-            break;
-        case BLOCK:
-            for(c = 0;c < column; c++){
-                for(r = 0; r < row; r++){
-                    this->graph.data[(y+r)*16 + x + c] = block_map[r][c];
-                }
-            }       
-            break;
-        // case MENU:
-        //     lcd_full_image_info graph;
-        //     for(c = 0 ;c < 0x800;c++)
-        //         graph.data[c] = menu_map[c];
-        //     ioctl(this->io_fd, LCD_IOCTL_DRAW_FULL_IMAGE, &(graph));
-        default:
-            break;
-    }
-    V(this->lcd_semid);
-}
-
-void GameClient::draw_moles(int state[])
-{
-    for(int i=0;i<NUM_MOLES;i++)
-    {
-        if((state[0]>>i)&(0x01))
-        {
-            this->draw_graph(MOLE,mole_x[i] ,mole_y[i]);
-            state[1]>>i;
-        }
-        else if((state[1]>>i)&(0x01))
-        {
-            this->draw_graph(HIT,mole_x[i] ,mole_y[i]);
-            state[0]>>i;
-        }
-        else
-        {
-            this->draw_graph(DUST,mole_x[i] ,mole_y[i]);       
-        }
-    }
-    this->draw();
 }
 
 int GameClient::read_pad()
@@ -223,6 +230,33 @@ int GameClient::read_pad()
     //change to char and print out
     this->keypad_input[0] = key & 0xff;
     this->keypad_input[1] = '\0';
+
+    int i,j,tt;
+    
+    for (i = 0; i < ROL_SIZE; i++)
+    {
+        for(j=0;j<COL_SIZE;j++)
+        {
+            char key0;
+            int pos;
+            key0 = this->keypad_input[0];
+            if((key0 > '0') && (key0 <= '9'))
+                pos = key0-'1';
+            else if(key0 == '*')
+                pos = 9;
+            else if(key0 == '0')
+                pos = 10;
+            else if(key0 == '#')
+                pos = 11;
+            if(i*COL_SIZE+j == pos){
+                printf("\nhi\n");
+                tt = this->temp[i][j];
+                this->temp[i][j] = 7;
+            }
+        }
+    }
+    if(this->hide_and_play == true)
+        show_LCD_pic(this->temp, this->io_fd);
     return 1;
 }
 
@@ -233,7 +267,7 @@ void GameClient::run()
         if(this->stage_pointer == 2)
         {
             printf("Stage 2\n");
-            //this->draw_moles(0x00);
+            //this->draw_cards(0x00);
             int i;
             char key0;
             while(1)
@@ -243,32 +277,10 @@ void GameClient::run()
                     key0 = this->keypad_input[0];
                     if( ( (key0 > '0') && (key0 <= '9') ) || (key0 == '*') || (key0 == '#') || (key0 == '0'))
                     {   
-                        if(this->secondhit == false){//first hit
-                            if((key0 > '0') && (key0 <= '9'))
-                                i = key0-'1';
-                            else if(key0 == '*')
-                                i = 9;
-                            else if(key0 == '0')
-                                i = 10;
-                            else if(key0 == '#')
-                                i = 11;
-                            if(this->hide_and_play == true)
-                                this->draw_graph(BLOCK,mole_x[i] ,mole_y[i]);
-                            this->draw();
+                        if(this->secondhit == false){//first hit          
                             sprintf(this->sndmsg,"%c",key0);
                             this->secondhit = true;
                         }else{
-                            if((key0 > '0') && (key0 <= '9'))
-                                i = key0-'1';
-                            else if(key0 == '*')
-                                i = 9;
-                            else if(key0 == '0')
-                                i = 10;
-                            else if(key0 == '#')
-                                i = 11;
-                            if(this->hide_and_play == true)
-                                this->draw_graph(BLOCK,mole_x[i] ,mole_y[i]);
-                            this->draw();
                             sprintf(this->sndmsg2,"%c",key0);
                             this->secondhit = false;
                             this->sendServer();
